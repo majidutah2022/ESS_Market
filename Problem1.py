@@ -14,8 +14,9 @@ import pandas as pd
 import pyomo.environ as pyo
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-
-solver = SolverFactory('cplex', executable='/opt/ibm/ILOG/CPLEX_Studio221/cplex/bin/x86-64_linux/cplex')
+solvername ='cplex'
+Path = '/opt/ibm/ILOG/CPLEX_Studio201/cplex/bin/x86-64_linux/cplex'
+solver = SolverFactory(solvername, executable=Path)
 # solver = SolverFactory('cplex', executable='E:/IBM/cplex/bin/x64_win64/cplex')
 # solver_NLP = SolverFactory('ipopt', executable='E:/Ipopt-3.5.1-win32-icl10.0-debug/bin/ipopt')
 
