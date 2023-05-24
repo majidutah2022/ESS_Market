@@ -93,7 +93,7 @@ def ESS_cycle(model):
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +0.001*sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]+model.Aux3[t]) for t in model.t)
+        +0.000*sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]+model.Aux3[t]) for t in model.t)
 
 #%%
 
