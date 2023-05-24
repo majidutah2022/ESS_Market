@@ -75,16 +75,16 @@ def ESS_Cons5(model,t):
 
 def ESS_Lin_C_1(model,t):
     if t==1: 
-        return model.Aux1[t] - model.Aux2[t] == model.Ich[t]
+        return model.Aux1[t] + model.Aux2[t] == model.Ich[t]
     else:
-        return model.Aux1[t] - model.Aux2[t] == model.Ich[t] - model.Ich[t-1]       
+        return model.Aux1[t] + model.Aux2[t] == model.Ich[t] - model.Ich[t-1]       
     return pyo.Constraint.Skip
     
 def ESS_Lin_D_1(model,t):
     if t==1: 
-        return model.Aux3[t] - model.Aux4[t] == model.Idch[t]
+        return model.Aux3[t] + model.Aux4[t] == model.Idch[t]
     else:
-        return model.Aux3[t] - model.Aux4[t] == model.Idch[t] - model.Idch[t-1]       
+        return model.Aux3[t] + model.Aux4[t] == model.Idch[t] - model.Idch[t-1]       
     return pyo.Constraint.Skip
 
 
@@ -93,7 +93,7 @@ def ESS_cycle(model):
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +0.000*sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]+model.Aux3[t]) for t in model.t)
+        +0.001*sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]+model.Aux3[t]) for t in model.t)
 
 #%%
 
