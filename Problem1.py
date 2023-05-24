@@ -6,7 +6,7 @@ Created on Tue May 23 09:14:45 2023
 """
 # Environment building
 import math
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -189,21 +189,21 @@ for t in range(1,t+1):
 
 
 
-#%% Plot
+# #%% Plot
 
-plt.plot(Num_cyc)
+# plt.plot(Num_cyc)
 
-plt.legend(["Total cycle"])
-plt.show()
+# plt.legend(["Total cycle"])
+# plt.show()
 
 
-plt.plot(Num_cyc_C)
-plt.legend(["Cycle:Chareg"])
-plt.show()
+# plt.plot(Num_cyc_C)
+# plt.legend(["Cycle:Chareg"])
+# plt.show()
 
-plt.plot(Num_cyc_D)
-plt.legend(["Cycle:Discharge"])
-plt.show()
+# plt.plot(Num_cyc_D)
+# plt.legend(["Cycle:Discharge"])
+# plt.show()
 
 #%%
   
