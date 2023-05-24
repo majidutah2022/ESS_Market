@@ -34,8 +34,7 @@ DA_price = pd.read_csv("DAM_LZ_SOUTH_2022.csv")
 DA_price = DA_price['Settlement Point Price'].values
 #%%
 
-model=pyo.AbstractModel()
-model.dual=pyo.Suffix(direction=pyo.Suffix.IMPORT)
+model =pyo.ConcreteModel()
 
 model.t = pyo.RangeSet(1,t)
 
@@ -148,66 +147,8 @@ model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)
 
 #%%
 
-instance = model.create_instance()
-results = solver.solve(instance,tee=True)
+model.OBJ = Objective(rule=obj_func, sense=maximize)
 
-#%% Results
-if (results.solver.status == SolverStatus.ok) and (results.solver.termination_condition == TerminationCondition.optimal):
-    feas_run="Feasible"
-else: 
-    feas_run="Not Feasible"
-
-
-objective=instance.OBJ.expr()
-print("The Objective function is:  $", objective)
-print("The feasibility status is:", feas_run)
-
-Pch_d = np.zeros(8760)
-for t in range(1,t+1):
-    Pch_d[t-1] = instance.Pch[t].value - instance.Pdch[t].value
-
-        
-Energy = np.zeros(8760)
-for t in range(1,t+1):
-    Energy[t-1] = instance.E[t].value 
-
-
-
-Num_cyc = np.zeros(8760)
-for t in range(1,t+1):
-    Num_cyc[t-1] = instance.Mch[t].value + instance.Mdch[t].value
-
-Total_Num_cyc = sum(Num_cyc)
-print("The total Number of cycles is:", Total_Num_cyc)
-
-Num_cyc_C = np.zeros(8760)
-for t in range(1,t+1):
-    Num_cyc_C[t-1] = instance.Mch[t].value 
-
-Num_cyc_D = np.zeros(8760)
-for t in range(1,t+1):
-    Num_cyc_D[t-1] = instance.Mdch[t].value 
-
-
-
-# #%% Plot
-
-# plt.plot(Num_cyc)
-
-# plt.legend(["Total cycle"])
-# plt.show()
-
-
-# plt.plot(Num_cyc_C)
-# plt.legend(["Cycle:Chareg"])
-# plt.show()
-
-# plt.plot(Num_cyc_D)
-# plt.legend(["Cycle:Discharge"])
-# plt.show()
-
-#%%
-  
-
-
-#%%
+results = solver.solve(model)          
+objective_all=model_WS.OBJ.expr()
+print("The objective function is: ",objective_all) 
