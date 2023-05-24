@@ -25,7 +25,7 @@ solver = SolverFactory(solvername, executable=Path)
 t = 8760
 Pmax = 10
 Emax = 20
-Eff = 0.95
+Eff = 1
 Eini = 0
 
 # df_price = pd.read_excel (r'C:\Users\majid\Box\Daily_files\Coding_S\.xlsx',sheet_name="DAM_LZ_SOUTH_2022",usecols ='A:E')
