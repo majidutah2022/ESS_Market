@@ -22,7 +22,7 @@ solver = SolverFactory(solvername, executable=Path)
 
 #%%
 
-t = 867
+t = 8670
 Pmax = 10
 Emax = 20
 Eff = 0.95
@@ -123,7 +123,7 @@ def ESS_Lin_D_4(model,t):
 
 
 def ESS_cycle(model):
-    return  sum((model.Mch[t]+model.Mdch[t]) for t in model.t) <= 10
+    return  sum((model.Mch[t]+model.Mdch[t]) for t in model.t) <= 365
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)
