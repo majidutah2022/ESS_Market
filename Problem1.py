@@ -70,7 +70,7 @@ def ESS_Cons4(model,t):
     return model.E[t] <= Emax
 
 def ESS_Cons5(model,t):
-    return model.Ich[t] + model.Idch[t] <= 1
+    return model.Ich[t] + model.Idch[t] == 1
 
 
 
