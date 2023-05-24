@@ -22,7 +22,7 @@ solver = SolverFactory(solvername, executable=Path)
 
 #%%
 
-t = 500
+t = 1000
 Pmax = 10
 Emax = 20
 Eff = 0.95
