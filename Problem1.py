@@ -150,5 +150,5 @@ model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)
 model.OBJ = Objective(rule=obj_func, sense=maximize)
 
 results = solver.solve(model)          
-objective_all=model_WS.OBJ.expr()
+objective_all=model.OBJ.expr()
 print("The objective function is: ",objective_all) 
