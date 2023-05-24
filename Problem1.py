@@ -34,7 +34,9 @@ DA_price = pd.read_csv("DAM_LZ_SOUTH_2022.csv")
 DA_price = DA_price['Settlement Point Price'].values
 #%%
 
-model =pyo.ConcreteModel()
+model = pyo.ConcreteModel()
+model.dual=pyo.Suffix(direction=pyo.Suffix.IMPORT)
+
 
 model.t = pyo.RangeSet(1,t)
 
@@ -147,8 +149,7 @@ model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)
 
 #%%
 
-model.OBJ = Objective(rule=obj_func, sense=maximize)
-
-results = solver.solve(model)          
+results = solver.solve(model)  
+        
 objective_all=model.OBJ.expr()
-print("The objective function is: ",objective_all) 
+print(objective_all) 
