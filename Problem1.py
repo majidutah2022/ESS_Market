@@ -64,7 +64,7 @@ def ESS_Cons2(model,t):
     return model.Pch[t] <= Pmax * model.Ich[t]
 
 def ESS_Cons3(model,t):
-    return model.Pdch[t] <= Pmax * (1-model.Idch[t])
+    return model.Pdch[t] <= Pmax * (1-model.Ich[t])
 
 def ESS_Cons4(model,t):
     return model.E[t] <= Emax
