@@ -22,7 +22,7 @@ solver = SolverFactory(solvername, executable=Path)
 
 #%%
 
-t = 438
+t = 350
 Pmax = 10
 Emax = 20
 Eff = 0.95
@@ -89,7 +89,7 @@ def ESS_Lin_D_1(model,t):
 
 
 def ESS_cycle(model):
-    return  sum((model.Aux1[t]+model.Aux3[t]) for t in model.t) <= 5
+    return  sum((model.Aux1[t]+model.Aux3[t]) for t in model.t) <= 4
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
@@ -110,7 +110,7 @@ model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)
 #%%
 
 instance = model.create_instance()
-solver.options['mipgap'] = 0.2
+# solver.options['mipgap'] = 0.2
 results = solver.solve(instance,tee=True)
 
 #%% Results
