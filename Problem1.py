@@ -192,21 +192,6 @@ for t in range(1,t+1):
 
 
 
-#%% Plot
-
-plt.plot(Num_cyc)
-
-plt.legend(["Total cycle"])
-plt.show()
-
-
-plt.plot(Num_cyc_C)
-plt.legend(["Cycle:Chareg"])
-plt.show()
-
-plt.plot(Num_cyc_D)
-plt.legend(["Cycle:Discharge"])
-plt.show()
 
 #%%
   
