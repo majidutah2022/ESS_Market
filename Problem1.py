@@ -137,18 +137,10 @@ for t in range(1,t+1):
 
 Num_cyc = np.zeros(8760)
 for t in range(1,t+1):
-    Num_cyc[t-1] = instance.Aux1[t].value + instance.Aux3[t].value
-
+    Num_cyc[t-1] = instance.Aux1[t].value 
 Total_Num_cyc = sum(Num_cyc)
 print("The total Number of cycles is:", Total_Num_cyc)
 
-Num_cyc_C = np.zeros(8760)
-for t in range(1,t+1):
-    Num_cyc_C[t-1] = instance.Aux1[t].value 
-
-Num_cyc_D = np.zeros(8760)
-for t in range(1,t+1):
-    Num_cyc_D[t-1] = instance.Aux3[t].value 
 
 
 
