@@ -25,7 +25,7 @@ solver = SolverFactory(solvername, executable=Path)
 t = 8670
 Pmax = 10
 Emax = 20
-Eff = 0.95
+Eff = 0.90
 Eini = 0
 
 # df_price = pd.read_excel (r'C:\Users\majid\Box\Daily_files\Coding_S\.xlsx',sheet_name="DAM_LZ_SOUTH_2022",usecols ='A:E')
@@ -93,7 +93,7 @@ def ESS_cycle(model):
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +0.001*sum((-model.Aux1[t]) for t in model.t)
+        +0.0001*sum((-model.Aux1[t]) for t in model.t)
 
 #%%
 
