@@ -22,10 +22,10 @@ solver = SolverFactory(solvername, executable=Path)
 
 #%%
 
-t = 438
+t = 8760
 Pmax = 10
 Emax = 20
-Eff = 0.9
+Eff = 0.90
 Eini = 0
 
 # df_price = pd.read_excel (r'C:\Users\majid\Box\Daily_files\Coding_S\.xlsx',sheet_name="DAM_LZ_SOUTH_2022",usecols ='A:E')
@@ -46,10 +46,10 @@ model.Pch = pyo.Var(model.t,domain=pyo.NonNegativeReals)
 model.Pdch = pyo.Var(model.t,domain=pyo.NonNegativeReals)
 model.Ich = pyo.Var(model.t,domain=pyo.Binary)
 model.Idch = pyo.Var(model.t,domain=pyo.Binary)
-model.Aux1 = pyo.Var(model.t,domain=pyo.NonNegativeReals)
-model.Aux3 = pyo.Var(model.t,domain=pyo.NonNegativeReals)
-model.Aux2 = pyo.Var(model.t,domain=pyo.NegativeReals)
-model.Aux4 = pyo.Var(model.t,domain=pyo.NegativeReals)
+model.Mch = pyo.Var(model.t,domain=pyo.Binary)
+model.Mdch = pyo.Var(model.t,domain=pyo.Binary)
+model.IMc = pyo.Var(model.t,domain=pyo.Binary)
+model.IMdc = pyo.Var(model.t,domain=pyo.Binary)
 model.E = pyo.Var(model.t, domain = pyo.NonNegativeReals)
 
 #%% Equations     
@@ -73,27 +73,60 @@ def ESS_Cons5(model,t):
     return model.Ich[t] + model.Idch[t] <= 1
 
 
+
 def ESS_Lin_C_1(model,t):
+    return model.Mch[t] == model.Ich[t] -  model.IMc[t]
+
+
+def ESS_Lin_C_2(model,t):
     if t==1: 
-        return model.Aux1[t] + model.Aux2[t] == model.Ich[t]
+        return model.IMc[t] <= 0
     else:
-        return model.Aux1[t] + model.Aux2[t] == model.Ich[t] - model.Ich[t-1]       
+        return model.IMc[t] <= model.Ich[t-1]        
     return pyo.Constraint.Skip
     
-def ESS_Lin_D_1(model,t):
+
+def ESS_Lin_C_3(model,t):
+    return  model.IMc[t] <= model.Ich[t] 
+
+ 
+def ESS_Lin_C_4(model,t):
     if t==1: 
-        return model.Aux3[t] + model.Aux4[t] == model.Idch[t]
+        return model.IMc[t] >= model.Ich[t] - 1
     else:
-        return model.Aux3[t] + model.Aux4[t] == model.Idch[t] - model.Idch[t-1]       
+        return model.IMc[t] >= model.Ich[t] + model.Ich[t-1] - 1       
+    return pyo.Constraint.Skip
+
+
+def ESS_Lin_D_1(model,t):
+    return model.Mdch[t] == model.Idch[t] -  model.IMdc[t]
+
+
+def ESS_Lin_D_2(model,t):
+    if t==1: 
+        return model.IMdc[t] <= 0
+    else:
+        return model.IMdc[t] <= model.Idch[t-1]        
+    return pyo.Constraint.Skip
+    
+
+def ESS_Lin_D_3(model,t):
+    return  model.IMdc[t] <= model.Idch[t] 
+
+ 
+def ESS_Lin_D_4(model,t):
+    if t==1: 
+        return model.IMdc[t] >= model.Idch[t] - 1
+    else:
+        return model.IMdc[t] >= model.Idch[t] + model.Idch[t-1] - 1       
     return pyo.Constraint.Skip
 
 
 def ESS_cycle(model):
-    return  sum((model.Aux1[t]+model.Aux3[t]) for t in model.t) <= 5
+    return  sum((model.Mch[t]+model.Mdch[t]) for t in model.t) <= 100
 
 def obj_func(model):
-    return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]-model.Aux3[t]) for t in model.t)
+    return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)
 
 #%%
 
@@ -103,14 +136,19 @@ model.constraint3 = pyo.Constraint(model.t,rule=ESS_Cons3)
 model.constraint4 = pyo.Constraint(model.t,rule=ESS_Cons4)
 model.constraint5 = pyo.Constraint(model.t,rule=ESS_Cons5)
 model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_1)
+model.constraint7 = pyo.Constraint(model.t,rule=ESS_Lin_C_2)
+model.constraint8 = pyo.Constraint(model.t,rule=ESS_Lin_C_3)
+model.constraint9 = pyo.Constraint(model.t,rule=ESS_Lin_C_4)
 model.constraint10 = pyo.Constraint(model.t,rule=ESS_Lin_D_1)
+model.constraint11 = pyo.Constraint(model.t,rule=ESS_Lin_D_2)
+model.constraint12 = pyo.Constraint(model.t,rule=ESS_Lin_D_3)
+model.constraint13 = pyo.Constraint(model.t,rule=ESS_Lin_D_4)
 model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
 #%%
 
 instance = model.create_instance()
-solver.options['mipgap'] = 0.2
 results = solver.solve(instance,tee=True)
 
 #%% Results
@@ -137,40 +175,39 @@ for t in range(1,t+1):
 
 Num_cyc = np.zeros(8760)
 for t in range(1,t+1):
-    Num_cyc[t-1] = instance.Aux1[t].value + instance.Aux3[t].value
+    Num_cyc[t-1] = instance.Mch[t].value + instance.Mdch[t].value
 
 Total_Num_cyc = sum(Num_cyc)
 print("The total Number of cycles is:", Total_Num_cyc)
 
 Num_cyc_C = np.zeros(8760)
 for t in range(1,t+1):
-    Num_cyc_C[t-1] = instance.Aux1[t].value 
+    Num_cyc_C[t-1] = instance.Mch[t].value 
 
 Num_cyc_D = np.zeros(8760)
 for t in range(1,t+1):
-    Num_cyc_D[t-1] = instance.Aux3[t].value 
+    Num_cyc_D[t-1] = instance.Mdch[t].value 
 
 
 
-# #%% Plot
+#%% Plot
 
-# plt.plot(Num_cyc)
+plt.plot(Num_cyc)
 
-# plt.legend(["Total cycle"])
-# plt.show()
+plt.legend(["Total cycle"])
+plt.show()
 
 
-# plt.plot(Num_cyc_C)
-# plt.legend(["Cycle:Chareg"])
-# plt.show()
+plt.plot(Num_cyc_C)
+plt.legend(["Cycle:Chareg"])
+plt.show()
 
-# plt.plot(Num_cyc_D)
-# plt.legend(["Cycle:Discharge"])
-# plt.show()
+plt.plot(Num_cyc_D)
+plt.legend(["Cycle:Discharge"])
+plt.show()
 
 #%%
   
 
 
 #%%
-
