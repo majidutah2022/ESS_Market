@@ -25,7 +25,7 @@ solver = SolverFactory(solvername, executable=Path)
 t = 8670
 Pmax = 10
 Emax = 20
-Eff = 0.90
+Eff = 0.9
 Eini = 0
 
 # df_price = pd.read_excel (r'C:\Users\majid\Box\Daily_files\Coding_S\.xlsx',sheet_name="DAM_LZ_SOUTH_2022",usecols ='A:E')
@@ -89,11 +89,11 @@ def ESS_Lin_D_1(model,t):
 
 
 def ESS_cycle(model):
-    return  sum((model.Aux1[t]) for t in model.t) <= 100
+    return  sum((model.Aux1[t]) for t in model.t) <= 365
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +0.0001*sum((-model.Aux1[t]) for t in model.t)
+        +0.001*sum((-model.Aux1[t]) for t in model.t)
 
 #%%
 
@@ -107,7 +107,7 @@ model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
 #%%
-solver.options['mipgap'] = 0.3
+solver.options['mipgap'] = 0.41
 instance = model.create_instance()
 results = solver.solve(instance,tee=True)
 
