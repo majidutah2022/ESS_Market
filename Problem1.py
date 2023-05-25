@@ -78,6 +78,12 @@ def ESS_Lin_C_1(model,t):
         return model.Aux1[t]  >= model.Ich[t] - model.Ich[t-1]       
     return pyo.Constraint.Skip
 
+def ESS_Lin_C_2(model,t):
+    if t==1: 
+        return model.Aux1[t]  >= model.Ich[t]
+    else:
+        return model.Aux1[t]  >= model.Ich[t-1] - model.Ich[t]       
+    return pyo.Constraint.Skip
 
 
 
@@ -86,7 +92,7 @@ def ESS_cycle(model):
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +sum((-model.Aux3[t]) for t in model.t)
+        +sum((-model.Aux1[t]) for t in model.t)
 
 #%%
 
@@ -95,6 +101,7 @@ model.constraint2 = pyo.Constraint(model.t,rule=ESS_Cons2)
 model.constraint3 = pyo.Constraint(model.t,rule=ESS_Cons3)
 model.constraint4 = pyo.Constraint(model.t,rule=ESS_Cons4)
 model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_1)
+model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_2)
 model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
