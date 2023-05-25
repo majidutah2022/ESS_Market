@@ -101,7 +101,7 @@ model.constraint2 = pyo.Constraint(model.t,rule=ESS_Cons2)
 model.constraint3 = pyo.Constraint(model.t,rule=ESS_Cons3)
 model.constraint4 = pyo.Constraint(model.t,rule=ESS_Cons4)
 model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_1)
-model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_2)
+model.constraint7 = pyo.Constraint(model.t,rule=ESS_Lin_C_2)
 model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
