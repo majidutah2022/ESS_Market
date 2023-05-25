@@ -110,7 +110,7 @@ model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)
 #%%
 
 instance = model.create_instance()
-# solver.options['mipgap'] = 0.2
+solver.options['mipgap'] = 0.2
 results = solver.solve(instance,tee=True)
 
 #%% Results
