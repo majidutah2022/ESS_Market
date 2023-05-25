@@ -108,9 +108,11 @@ model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
 #%%
-
+solver.options['mipgap'] = 0.3
 instance = model.create_instance()
 results = solver.solve(instance,tee=True)
+
+
 
 #%% Results
 if (results.solver.status == SolverStatus.ok) and (results.solver.termination_condition == TerminationCondition.optimal):
