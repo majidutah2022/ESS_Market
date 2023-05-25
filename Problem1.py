@@ -64,28 +64,22 @@ def ESS_Cons2(model,t):
     return model.Pch[t] <= Pmax * model.Ich[t]
 
 def ESS_Cons3(model,t):
-    return model.Pdch[t] <= Pmax * model.Idch[t]
+    return model.Pdch[t] <= Pmax *(1-model.Ich[t])
 
 def ESS_Cons4(model,t):
     return model.E[t] <= Emax
 
-def ESS_Cons5(model,t):
-    return model.Ich[t] + model.Idch[t] <= 1
+
 
 
 def ESS_Lin_C_1(model,t):
     if t==1: 
-        return model.Aux1[t] + model.Aux2[t] == model.Ich[t]
+        return model.Aux1[t] - model.Aux3[t] == model.Ich[t]
     else:
-        return model.Aux1[t] + model.Aux2[t] == model.Ich[t] - model.Ich[t-1]       
+        return model.Aux1[t] - model.Aux3[t] == model.Ich[t] - model.Ich[t-1]       
     return pyo.Constraint.Skip
     
-def ESS_Lin_D_1(model,t):
-    if t==1: 
-        return model.Aux3[t] + model.Aux4[t] == model.Idch[t]
-    else:
-        return model.Aux3[t] + model.Aux4[t] == model.Idch[t] - model.Idch[t-1]       
-    return pyo.Constraint.Skip
+
 
 
 def ESS_cycle(model):
@@ -93,7 +87,7 @@ def ESS_cycle(model):
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
-        +0.001*sum((model.Aux2[t]+model.Aux4[t]-model.Aux1[t]-model.Aux3[t]) for t in model.t)
+        +0.001*sum((-model.Aux1[t]-model.Aux3[t]) for t in model.t)
 
 #%%
 
@@ -101,9 +95,7 @@ model.constraint1 = pyo.Constraint(model.t,rule=ESS_Cons1)
 model.constraint2 = pyo.Constraint(model.t,rule=ESS_Cons2)
 model.constraint3 = pyo.Constraint(model.t,rule=ESS_Cons3)
 model.constraint4 = pyo.Constraint(model.t,rule=ESS_Cons4)
-model.constraint5 = pyo.Constraint(model.t,rule=ESS_Cons5)
 model.constraint6 = pyo.Constraint(model.t,rule=ESS_Lin_C_1)
-model.constraint10 = pyo.Constraint(model.t,rule=ESS_Lin_D_1)
 model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
