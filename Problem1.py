@@ -83,7 +83,7 @@ def ESS_Lin_C_1(model,t):
 
 
 def ESS_cycle(model):
-    return  sum((model.Aux1[t]+model.Aux3[t]) for t in model.t) <= 365
+    return  sum((model.Aux1[t]+model.Aux3[t]) for t in model.t) <= 100
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
