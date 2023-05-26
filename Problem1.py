@@ -89,7 +89,7 @@ def ESS_Lin_D_1(model,t):
 
 
 def ESS_cycle(model):
-    return  sum((model.Aux1[t]) for t in model.t) <= 365
+    return  sum((model.Aux1[t]) for t in model.t) <= 100
 
 def obj_func(model):
     return sum( (model.Pdch[t]-model.Pch[t])*DA_price[t-1] for t in model.t)\
@@ -107,7 +107,7 @@ model.constraint14 = pyo.Constraint(rule=ESS_cycle)
 model.OBJ = pyo.Objective(rule=obj_func, sense=maximize)  
 
 #%%
-solver.options['mipgap'] = 0.41
+solver.options['mipgap'] = 0.42
 instance = model.create_instance()
 results = solver.solve(instance,tee=True)
 
